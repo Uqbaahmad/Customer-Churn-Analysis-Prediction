@@ -1,13 +1,9 @@
 import streamlit as st 
-
-
-# EDa 
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
 import os
-from PIL import Image
-
 
 
 # Title
@@ -38,12 +34,12 @@ if st.checkbox("Show all Dataset"):
 	st.dataframe(data)		
 
 
-# Show Column Name
+#=============================== Show Column Name=========================
 if st.checkbox("Show Columns Name"):
 	st.write(data.columns)	
 
 
-# Show Dimensions
+#=============================== Show Dimensions ==============================
 data_dim = st.radio("Data Dimensions", ("Rows", "Columns", "All"))
 if data_dim == "Rows":
 	st.text("Rows Count")
@@ -55,7 +51,7 @@ else:
 	st.text("All Dataset shape")
 	st.write(data.shape)		
 	
-# Describe Data 
+#=============================== Describe Data ================================
 if st.checkbox("Describe Dataset"):
 	st.write(data.describe())	
 
@@ -114,28 +110,85 @@ else:
 
 
 # EDA
-if st.checkbox("Correlation"):
-	st.write(plt.matshow(data.corr()))
-	st.pyplot()
 
-#sns.catplot(data=df, x="Churn", kind="count");
+col_option = st.selectbox("Select Plot",("Correlation Plot", "Distribtuion of Churn","Distribution of Tenure","Churn Distribution with Tenure", "Distribution of Gender","Distribution of SeniorCitizen", "Chrun distribuiton with SeniorCitizen","Distribution of PhoneService", "Chrun distribuiton with PhoneService", "Distribution of PaymentMethod"))
 
+#---------------------------------------------- Correlation ------------------------------------------------------------------
 
-def barPlot():
-    fig = plt.figure(figsize=(10, 4))
-    sns.catplot( data=data, x="Churn", kind="count")
-    st.pyplot(fig)	
+if col_option == "Correlation Plot":
+            st.write("### Correlation")
+            fig, ax = plt.subplots(figsize=(10,10))
+            st.write(sns.heatmap(data.corr(),annot=True, vmax=.8, square=True, cmap='RdBu'))
+            st.pyplot(fig)
 
-if st.checkbox("Seaborn Pairplot",value=True):
-	fig = plt.figure()
-	sns.pairplot(data, hue="Churn") 
+#------------------------------------------- Distribution of Churn ---------------------------------------------------------------
+
+if col_option == "Distribtuion of Churn":
+		st.write("### Distribtuion of Churn")
+		fig, ax = plt.subplots(figsize=(10,10))
+		st.write(data.iloc[:,-1].value_counts().plot.pie(autopct="%1.1f%%", colors = ['lightblue', 'pink'],shadow = True,startangle=90))
+		st.pyplot(fig)
+		st.write(data.iloc[:,-1].value_counts())
+
+#--------------------------------------------- Distribution of Tenure ------------------------------------------------------------
+
+if col_option == "Distribution of Tenure":
+	st.write(" ### Distribution of Tenure")
+	fig, ax = plt.subplots(figsize=(8, 7))
+	st.write(sns.displot(data=data, x="tenure", binwidth=3))
 	st.pyplot(fig)
+	st.write(data['tenure'].value_counts())
 
-if st.checkbox("SeniorCitizen", value=True):
-	fig1 = data['SeniorCitizen'].value_counts().plot(kind='pie',
-                                        colors = ['lightblue', 'darkblue'],
-                                        figsize=(8,6),
-                                        autopct='%1.1f%%',
-                                        shadow = True,
-                                        startangle=90)
-	st.pyplot(fig1)									
+#Churn yes dataset
+churn_yes = pd.DataFrame(data.query('Churn == "Yes"'))
+
+#Churn no dataset
+churn_no = pd.DataFrame(data.query('Churn == "No"'))
+X = pd.DataFrame(churn_yes['tenure'].value_counts().reset_index())
+
+if col_option == "Churn Distribution with Tenure":
+	st.write("### Churn Distribution with Tenure")
+	fig, ax = plt.subplots(figsize=(10, 10))
+	st.write(px.scatter(X, x="tenure",y='index',log_x=True, width=600))	
+
+#----------------------------------------------  Distribution of Gender --------------------------------------------------------------
+
+if col_option == "Distribution of Gender":
+	st.write(" ### Distribution of Gender")
+	fig, ax = plt.subplots(figsize=(8, 7))
+	st.write(sns.countplot(data=data, x="gender"))
+	st.pyplot(fig)
+	st.write(data['gender'].value_counts())
+
+# ---------------------------------------------- Distribution of SeniorCitizen ---------------------------------------------------------
+
+if col_option == "Distribution of SeniorCitizen":
+	st.write("### Distribution of SeniorCitizen")
+	fig, ax = plt.subplots(figsize = (10, 10))
+	st.write(data['SeniorCitizen'].value_counts().plot(kind='pie', colors = ['lightblue', 'darkblue'], autopct='%1.1f%%',
+	        shadow = True, startangle=90))
+	st.pyplot(fig)
+	st.write(data['SeniorCitizen'].value_counts())
+
+if col_option == "Chrun distribuiton with SeniorCitizen":
+	st.write("### Chrun distribuiton with SeniorCitizen")
+	fig, ax = plt.subplots(figsize=(10, 10))
+	st.write(px.histogram(data, x="Churn", color="SeniorCitizen", barmode="group", color_discrete_map={"Yes": 'blue', "No": 'lightblue'}))
+	
+#--------------------------------------------------- Distribuiton with PhoneService ---------------------------------------------------
+
+if col_option == "Distribution of PhoneService":
+	st.write(" ### Distribution of PhoneService")
+	fig, ax = plt.subplots(figsize=(8, 7))
+	st.write(sns.countplot(data=data, x="PhoneService"))
+	st.pyplot(fig)
+	st.write(data['PhoneService'].value_counts())
+
+if col_option == "Chrun distribuiton with PhoneService":
+	st.write("### Chrun distribuiton with PhoneService")
+	fig, ax = plt.subplots(figsize=(10, 10))
+	st.write(px.histogram(data, x="Churn", color="PhoneService", barmode="group", color_discrete_map={"Yes": 'blue', "No": 'lightblue'}))
+
+
+# -------------------------------------------------Distribution of PaymentMethod-----------------------------------------------------
+
