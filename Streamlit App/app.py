@@ -127,9 +127,15 @@ def barPlot():
     st.pyplot(fig)	
 
 if st.checkbox("Seaborn Pairplot",value=True):
-	import matplotlib
-	import matplotlib.pyplot as plt
-	import seaborn as sns
 	fig = plt.figure()
-	sns.pairplot(data, hue="SKU") 
+	sns.pairplot(data, hue="Churn") 
 	st.pyplot(fig)
+
+if st.checkbox("SeniorCitizen", value=True):
+	fig1 = data['SeniorCitizen'].value_counts().plot(kind='pie',
+                                        colors = ['lightblue', 'darkblue'],
+                                        figsize=(8,6),
+                                        autopct='%1.1f%%',
+                                        shadow = True,
+                                        startangle=90)
+	st.pyplot(fig1)									
