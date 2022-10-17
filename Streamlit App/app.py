@@ -7,8 +7,9 @@ import os
 
 
 # Title
-st.title("Customer Churn EDA & Prediction App")
-st.header("Built with Streamlit")
+st.title("Customer Churn App")
+st.header("Exploratory Data Analysis")
+st.text("eee")
 
 
 # Data Frame
@@ -24,6 +25,7 @@ data = explore_data(dataset)
 
 if st.checkbox("Preview Dataset"):
 	if st.button("Head"):
+		st.text("Let's see the first five rows of dataset. The head function will be used to print the first five rows.")
 		st.write(data.head())
 	elif st.button("Tail"):
 		st.write(data.tail())
@@ -34,29 +36,31 @@ if st.checkbox("Show all Dataset"):
 	st.dataframe(data)		
 
 
-#=============================== Show Column Name=========================
+#----------------------------------------------------- Show Column Name-----------------------------------------------
 if st.checkbox("Show Columns Name"):
 	st.write(data.columns)	
 
 
-#=============================== Show Dimensions ==============================
+#------------------------------------------------------ Show Dimensions ------------------------------------------------
 data_dim = st.radio("Data Dimensions", ("Rows", "Columns", "All"))
 if data_dim == "Rows":
-	st.text("Rows Count")
+	st.markdown("**Rows Counts**")
 	st.write(data.shape[0])
 elif data_dim == "Columns":
-	st.text("Columns Counts")
+	st.markdown("**Columns Counts**")
 	st.write(data.shape[1])
 else:
-	st.text("All Dataset shape")
+	st.markdown("**All Dataset shape**")
 	st.write(data.shape)		
 	
-#=============================== Describe Data ================================
+#------------------------------------------------------ Describe Data ---------------------------------------------------
 if st.checkbox("Describe Dataset"):
+	st.text("Let’s get a quick summary of the dataset using the describe method")
 	st.write(data.describe())	
 
-# Data Info
+# --------------------------------------------------------Data Info--------------------------------------------------------
 if st.checkbox("Info Dataset"):
+	st.text("Let’s see the columns name and their data types")
 	st.write(data.info())	
 
 
@@ -109,11 +113,11 @@ else:
 	st.write("Select Column")
 
 
-# EDA
+#------------------------------------------------------------- EDA----------------------------------------------------------
 
 col_option = st.selectbox("Select Plot",("Correlation Plot", "Distribtuion of Churn","Distribution of Tenure","Churn Distribution with Tenure", "Distribution of Gender","Distribution of SeniorCitizen", "Chrun distribuiton with SeniorCitizen","Distribution of PhoneService", "Chrun distribuiton with PhoneService", "Distribution of PaymentMethod"))
 
-#---------------------------------------------- Correlation ------------------------------------------------------------------
+#----------------------------------------------------------- Correlation ----------------------------------------------------
 
 if col_option == "Correlation Plot":
             st.write("### Correlation")
@@ -121,7 +125,7 @@ if col_option == "Correlation Plot":
             st.write(sns.heatmap(data.corr(),annot=True, vmax=.8, square=True, cmap='RdBu'))
             st.pyplot(fig)
 
-#------------------------------------------- Distribution of Churn ---------------------------------------------------------------
+#-------------------------------------------------------- Distribution of Churn ---------------------------------------------
 
 if col_option == "Distribtuion of Churn":
 		st.write("### Distribtuion of Churn")
@@ -130,7 +134,7 @@ if col_option == "Distribtuion of Churn":
 		st.pyplot(fig)
 		st.write(data.iloc[:,-1].value_counts())
 
-#--------------------------------------------- Distribution of Tenure ------------------------------------------------------------
+#--------------------------------------------- Distribution of Tenure --------------------------------------------------------
 
 if col_option == "Distribution of Tenure":
 	st.write(" ### Distribution of Tenure")
@@ -151,7 +155,7 @@ if col_option == "Churn Distribution with Tenure":
 	fig, ax = plt.subplots(figsize=(10, 10))
 	st.write(px.scatter(X, x="tenure",y='index',log_x=True, width=600))	
 
-#----------------------------------------------  Distribution of Gender --------------------------------------------------------------
+#----------------------------------------------  Distribution of Gender --------------------------------------------------------
 
 if col_option == "Distribution of Gender":
 	st.write(" ### Distribution of Gender")
@@ -160,7 +164,7 @@ if col_option == "Distribution of Gender":
 	st.pyplot(fig)
 	st.write(data['gender'].value_counts())
 
-# ---------------------------------------------- Distribution of SeniorCitizen ---------------------------------------------------------
+# ---------------------------------------------- Distribution of SeniorCitizen ---------------------------------------------------
 
 if col_option == "Distribution of SeniorCitizen":
 	st.write("### Distribution of SeniorCitizen")
@@ -192,3 +196,4 @@ if col_option == "Chrun distribuiton with PhoneService":
 
 # -------------------------------------------------Distribution of PaymentMethod-----------------------------------------------------
 
+st.header("Prediction")
