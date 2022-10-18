@@ -7,6 +7,23 @@ from joblib import load
 import pickle
 import os
 
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import  DecisionTreeClassifier
+
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import  RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.metrics import classification_report, confusion_matrix
+
 
 # Title
 st.title("Customer Churn App")
@@ -22,6 +39,16 @@ dataset = 'Customer-Churn.csv'
 def explore_data(data):
 	df = pd.read_csv(os.path.join(dataset))
 	return df
+
+new_datasets = 'cleaned_Dataset.csv'
+
+# Function to load dataset
+@st.cache(persist=True)
+def explore_dataset(new_df):
+	df = pd.read_csv(os.path.join(new_datasets))
+	return df
+
+new_df = explore_dataset(new_datasets)
 
 data = explore_data(dataset)
 
@@ -152,18 +179,10 @@ if col_option =="Churn distribuiton with PhoneService":
 	st.write("Churn distribuiton with PhoneService")
 	# fig, ax=  plt.subplots(figsize=(10, 10))
 	fig = px.histogram(data, x="Churn", color="PhoneService", barmode="group", color_discrete_map={"Yes": 'blue', "No": 'lightblue'})
-	st.pyplot(fig)
+	st.plotly_chart(fig)
 
 
 
 #---------------------------------------------------- Prediction-----------------------------------------------------------------------
 st.header("Prediction")
-
-
-
-@st.cache
-def load_model():
-    return load('random_forest_model.pk')
-
-
 
