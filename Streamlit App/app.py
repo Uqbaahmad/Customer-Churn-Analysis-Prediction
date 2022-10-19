@@ -186,3 +186,37 @@ if col_option =="Churn distribuiton with PhoneService":
 #---------------------------------------------------- Prediction-----------------------------------------------------------------------
 st.header("Prediction")
 
+X = new_df.drop(columns = ['Churn'])
+y = new_df['Churn'].values
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= 0.30, random_state=1)
+print('X_train:',len(X_train))
+print('X_test:',len(X_test))
+print('y_train',len(y_train))
+print('y_test',len(y_test))
+
+
+log_model = make_pipeline(StandardScaler(),LogisticRegression())
+log_model.fit(X_train, y_train)
+y_pred = log_model.predict(X_test)
+accuracy = log_model.score(X_test,y_test)
+print("Logistic Regression accuracy: ",accuracy)
+print("classification_report")
+print(classification_report(y_test, y_pred))
+
+
+
+
+cf_matrix = confusion_matrix(y_test, y_pred)
+
+options = st.selectbox("Choose an Option",("LogisticRegression"))
+
+if options == "LogisticRegression":
+            st.write("### Logistic Regression")
+            fig, ax = plt.subplots(figsize=(10,10))
+            st.write(sns.heatmap(cf_matrix , annot=True,fmt = "d",cmap='OrRd'), options)
+            st.pyplot(fig)
+
+
+
+#plt.title(" LOGISTIC REGRESSION CONFUSION MATRIX");
