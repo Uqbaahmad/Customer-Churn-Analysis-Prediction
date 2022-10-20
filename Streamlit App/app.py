@@ -195,28 +195,45 @@ print('X_test:',len(X_test))
 print('y_train',len(y_train))
 print('y_test',len(y_test))
 
+#------------------------------------------------------------ Logistic Regression -----------------------------------------------------
 
 log_model = make_pipeline(StandardScaler(),LogisticRegression())
 log_model.fit(X_train, y_train)
 y_pred = log_model.predict(X_test)
 accuracy = log_model.score(X_test,y_test)
-print("Logistic Regression accuracy: ",accuracy)
-print("classification_report")
-print(classification_report(y_test, y_pred))
+lr_matrix = confusion_matrix(y_test, y_pred)
 
+#----------------------------------------------------------------Decision Tree----------------------------------------------------------
 
+dec_model = make_pipeline(StandardScaler(), DecisionTreeClassifier())
+dec_model.fit(X_train,y_train)
+y_pred1 = dec_model.predict(X_test)
+accuracy1 = dec_model.score(X_test,y_test)
+print("Decision Tree accuracy: ",accuracy)
+dec_matrix = confusion_matrix(y_test, y_pred1)
 
-
-cf_matrix = confusion_matrix(y_test, y_pred)
-
-options = st.selectbox("Choose an Option",("LogisticRegression"))
+options = st.selectbox("Choose an Option",
+                          ("LogisticRegression","DecisionTree Classifier", "Random Forest"))
 
 if options == "LogisticRegression":
-            st.write("### Logistic Regression")
-            fig, ax = plt.subplots(figsize=(10,10))
-            st.write(sns.heatmap(cf_matrix , annot=True,fmt = "d",cmap='OrRd'), options)
-            st.pyplot(fig)
+	st.write("### Logistic Regression")
+	fig, ax = plt.subplots(figsize=(3, 3))
+	st.write(sns.heatmap(lr_matrix , annot=True,fmt = "d",cmap='OrRd'))
+	st.pyplot(fig)
+	st.write("### Logistic Regression accuracy: ",accuracy)
+	st.write("### Precision - ",precision_score(y_test,y_pred))
+	st.write("### Recall - ",recall_score(y_test,y_pred))
+	st.write("### F1 score - ",f1_score(y_test,y_pred))
+#	st.write(classification_report(y_test, y_pred))
+
+if options == "DecisionTree Classifier":
+	st.write("### DecisionTreeClassifier")
+	fig, ax = plt.subplots(figsize=(3, 3))
+	st.write(sns.heatmap(dec_matrix , annot=True,fmt = "d",cmap='OrRd'))
+	st.pyplot(fig)
+	st.write("### DecisionTree accuracy: ",accuracy1)
+	st.write("### Precision - ",precision_score(y_test,y_pred1))
+	st.write("### Recall - ",recall_score(y_test,y_pred1))
+	st.write("### F1 score - ",f1_score(y_test,y_pred1))
 
 
-
-#plt.title(" LOGISTIC REGRESSION CONFUSION MATRIX");
