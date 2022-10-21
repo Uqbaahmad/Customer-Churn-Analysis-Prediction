@@ -229,7 +229,7 @@ y_pred6 = et_model.predict(X_test)
 accuracy6 = et_model.score(X_test,y_test)
 et_matrix = confusion_matrix(y_test, y_pred6)
 
-options = st.selectbox("Choose an Option",("LogisticRegression","DecisionTree Classifier","RandomForest Classifier", "KNeighbors Classifier","AdaBoostClassifier","GradientBoostingClassifier", "ExtraTreesClassifier"))
+options = st.selectbox("Choose an Option",("LogisticRegression","DecisionTree Classifier","RandomForest Classifier", "KNeighbors Classifier","AdaBoost Classifier","GradientBoosting Classifier", "ExtraTrees Classifier"))
 
 if options == "LogisticRegression":
 	st.write("### Logistic Regression")
@@ -254,7 +254,7 @@ if options == "DecisionTree Classifier":
 if options == "RandomForest Classifier":
 	st.write("### RandomForestClassifier")
 	fig, ax = plt.subplots(figsize=(3, 3))
-	st.write(sns.heatmap(dec_matrix , annot=True,fmt = "d",cmap='OrRd'))
+	st.write(sns.heatmap(rf_matrix , annot=True,fmt = "d",cmap='OrRd'))
 	st.pyplot(fig)
 	st.write("### RandomForest accuracy: ",accuracy2)
 	st.write("### Precision - ",precision_score(y_test,y_pred2))
@@ -269,7 +269,7 @@ if options == "KNeighbors Classifier":
 	st.write("### KNeighbors accuracy: ",accuracy3)
 	st.write("### Precision - ",precision_score(y_test,y_pred3))
 	st.write("### Recall - ",recall_score(y_test,y_pred3))
-	st.write("### F1 score - ",f1_score(y_test,y_pred3))
+	st.write("### F1 score - ",f1_score(y_test,y_pred3))	
 
 if options == "AdaBoost Classifier":
 	st.write("### AdaBoostClassifier")
