@@ -24,33 +24,25 @@ from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_sc
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.metrics import classification_report, confusion_matrix
 
-
 # Title
 st.title("Customer Churn App")
 st.header("Exploratory Data Analysis")
 st.text("eee")
 
-
-# Data Frame
-dataset = 'Customer-Churn.csv'
-
+dataset = 'Customer-Churn.csv'                                                  # DataFrame
+new_datasets = 'cleaned_Dataset.csv'
 # Function to load dataset
-@st.cache(persist=True)
+@st.cache(persist=True)                                       
 def explore_data(data):
 	df = pd.read_csv(os.path.join(dataset))
 	return df
 
-new_datasets = 'cleaned_Dataset.csv'
-
-# Function to load dataset
 @st.cache(persist=True)
 def explore_dataset(new_df):
 	df = pd.read_csv(os.path.join(new_datasets))
 	return df
-
+data = explore_data(dataset)	
 new_df = explore_dataset(new_datasets)
-
-data = explore_data(dataset)
 
 if st.checkbox("Preview Dataset"):
 	if st.button("Head"):
@@ -64,11 +56,9 @@ if st.checkbox("Preview Dataset"):
 if st.checkbox("Show all Dataset"):
 	st.dataframe(data)		
 
-
 #----------------------------------------------------- Show Column Name-----------------------------------------------
 if st.checkbox("Show Columns Name"):
 	st.write(data.columns)	
-
 
 #------------------------------------------------------ Show Dimensions ------------------------------------------------
 data_dim = st.radio("Data Dimensions", ("Rows", "Columns", "All"))
@@ -181,19 +171,12 @@ if col_option =="Churn distribuiton with PhoneService":
 	fig = px.histogram(data, x="Churn", color="PhoneService", barmode="group", color_discrete_map={"Yes": 'blue', "No": 'lightblue'})
 	st.plotly_chart(fig)
 
-
-
 #---------------------------------------------------- Prediction-----------------------------------------------------------------------
 st.header("Prediction")
 
 X = new_df.drop(columns = ['Churn'])
 y = new_df['Churn'].values
-
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= 0.30, random_state=1)
-print('X_train:',len(X_train))
-print('X_test:',len(X_test))
-print('y_train',len(y_train))
-print('y_test',len(y_test))
 
 #------------------------------------------------------------ Logistic Regression -----------------------------------------------------
 
@@ -209,11 +192,44 @@ dec_model = make_pipeline(StandardScaler(), DecisionTreeClassifier())
 dec_model.fit(X_train,y_train)
 y_pred1 = dec_model.predict(X_test)
 accuracy1 = dec_model.score(X_test,y_test)
-print("Decision Tree accuracy: ",accuracy)
 dec_matrix = confusion_matrix(y_test, y_pred1)
 
-options = st.selectbox("Choose an Option",
-                          ("LogisticRegression","DecisionTree Classifier", "Random Forest"))
+#---------------------------------------------------------------RandomForest Classifier------------------------------------------------
+rf_model = make_pipeline(StandardScaler(), RandomForestClassifier())
+rf_model.fit(X_train,y_train)
+y_pred2 = rf_model.predict(X_test)
+accuracy2 = rf_model.score(X_test,y_test)
+rf_matrix = confusion_matrix(y_test, y_pred2)
+
+#----------------------------------------------------------------KNeighbors Classifier-------------------------------------------------
+knn_model = make_pipeline(StandardScaler(), KNeighborsClassifier())
+knn_model.fit(X_train,y_train)
+y_pred3 = knn_model.predict(X_test)
+accuracy3 = knn_model.score(X_test,y_test)
+knn_matrix = confusion_matrix(y_test, y_pred3)
+
+#------------------------------------------------------------------AdaBoostClassifier-------------------------------------------------
+ada_model = make_pipeline(StandardScaler(), AdaBoostClassifier())
+ada_model.fit(X_train,y_train)
+y_pred4 = ada_model.predict(X_test)
+accuracy4 = ada_model.score(X_test,y_test)
+ada_matrix = confusion_matrix(y_test, y_pred4)
+
+#-------------------------------------------------------------GradientBoostingClassifier-----------------------------------------------
+gb_model = make_pipeline(StandardScaler(), GradientBoostingClassifier())
+gb_model.fit(X_train,y_train)
+y_pred5 = gb_model.predict(X_test)
+accuracy5 = gb_model.score(X_test,y_test)
+gb_matrix = confusion_matrix(y_test, y_pred5)
+
+#--------------------------------------------------------------------ExtraTreesClassifier------------------------------------------------
+et_model = make_pipeline(StandardScaler(), ExtraTreesClassifier())
+et_model.fit(X_train,y_train)
+y_pred6 = et_model.predict(X_test)
+accuracy6 = et_model.score(X_test,y_test)
+et_matrix = confusion_matrix(y_test, y_pred6)
+
+options = st.selectbox("Choose an Option",("LogisticRegression","DecisionTree Classifier","RandomForest Classifier", "KNeighbors Classifier","AdaBoostClassifier","GradientBoostingClassifier", "ExtraTreesClassifier"))
 
 if options == "LogisticRegression":
 	st.write("### Logistic Regression")
@@ -224,7 +240,6 @@ if options == "LogisticRegression":
 	st.write("### Precision - ",precision_score(y_test,y_pred))
 	st.write("### Recall - ",recall_score(y_test,y_pred))
 	st.write("### F1 score - ",f1_score(y_test,y_pred))
-#	st.write(classification_report(y_test, y_pred))
 
 if options == "DecisionTree Classifier":
 	st.write("### DecisionTreeClassifier")
@@ -236,4 +251,52 @@ if options == "DecisionTree Classifier":
 	st.write("### Recall - ",recall_score(y_test,y_pred1))
 	st.write("### F1 score - ",f1_score(y_test,y_pred1))
 
+if options == "RandomForest Classifier":
+	st.write("### RandomForestClassifier")
+	fig, ax = plt.subplots(figsize=(3, 3))
+	st.write(sns.heatmap(dec_matrix , annot=True,fmt = "d",cmap='OrRd'))
+	st.pyplot(fig)
+	st.write("### RandomForest accuracy: ",accuracy2)
+	st.write("### Precision - ",precision_score(y_test,y_pred2))
+	st.write("### Recall - ",recall_score(y_test,y_pred2))
+	st.write("### F1 score - ",f1_score(y_test,y_pred2))
 
+if options == "KNeighbors Classifier":
+	st.write("### KNeighborsClassifier")
+	fig, ax = plt.subplots(figsize=(3, 3))
+	st.write(sns.heatmap(knn_matrix , annot=True,fmt = "d",cmap='OrRd'))
+	st.pyplot(fig)
+	st.write("### KNeighbors accuracy: ",accuracy3)
+	st.write("### Precision - ",precision_score(y_test,y_pred3))
+	st.write("### Recall - ",recall_score(y_test,y_pred3))
+	st.write("### F1 score - ",f1_score(y_test,y_pred3))
+
+if options == "AdaBoost Classifier":
+	st.write("### AdaBoostClassifier")
+	fig, ax = plt.subplots(figsize=(3, 3))
+	st.write(sns.heatmap(ada_matrix , annot=True,fmt = "d",cmap='OrRd'))
+	st.pyplot(fig)
+	st.write("### AdaBoost accuracy: ",accuracy4)
+	st.write("### Precision - ",precision_score(y_test,y_pred4))
+	st.write("### Recall - ",recall_score(y_test,y_pred4))
+	st.write("### F1 score - ",f1_score(y_test,y_pred4))	
+
+if options == "GradientBoosting Classifier":
+	st.write("### GradientBoostingClassifier")
+	fig, ax = plt.subplots(figsize=(3, 3))
+	st.write(sns.heatmap(gb_matrix , annot=True,fmt = "d",cmap='OrRd'))
+	st.pyplot(fig)
+	st.write("### GradientBoosting accuracy: ",accuracy5)
+	st.write("### Precision - ",precision_score(y_test,y_pred5))
+	st.write("### Recall - ",recall_score(y_test,y_pred5))
+	st.write("### F1 score - ",f1_score(y_test,y_pred5))	
+
+if options == "ExtraTrees Classifier":
+	st.write("### ExtraTreesClassifier")
+	fig, ax = plt.subplots(figsize=(3, 3))
+	st.write(sns.heatmap(et_matrix , annot=True,fmt = "d",cmap='OrRd'))
+	st.pyplot(fig)
+	st.write("### ExtraTrees accuracy: ",accuracy6)
+	st.write("### Precision - ",precision_score(y_test,y_pred6))
+	st.write("### Recall - ",recall_score(y_test,y_pred6))
+	st.write("### F1 score - ",f1_score(y_test,y_pred6))		
