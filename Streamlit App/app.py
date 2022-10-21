@@ -27,7 +27,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 # Title
 st.title("Customer Churn App")
 st.header("Exploratory Data Analysis")
-st.text("eee")
+st.text("Exploratory Data Analysis (EDA) is a method of analysing data that employs visual \ntechniques. It is used to discover trends, patterns, or to validate assumptions \nusing statistical summaries and graphical representations.")
 
 dataset = 'Customer-Churn.csv'                                                  # DataFrame
 new_datasets = 'cleaned_Dataset.csv'
@@ -64,13 +64,13 @@ if st.checkbox("Show Columns Name"):
 data_dim = st.radio("Data Dimensions", ("Rows", "Columns", "All"))
 if data_dim == "Rows":
 	st.markdown("**Rows Counts**")
-	st.write(data.shape[0])
+	st.success(data.shape[0])
 elif data_dim == "Columns":
 	st.markdown("**Columns Counts**")
-	st.write(data.shape[1])
+	st.success(data.shape[1])
 else:
 	st.markdown("**All Dataset shape**")
-	st.write(data.shape)		
+	st.success(data.shape)		
 	
 #------------------------------------------------------ Describe Data ---------------------------------------------------
 if st.checkbox("Describe Dataset"):
@@ -79,7 +79,7 @@ if st.checkbox("Describe Dataset"):
 
 #------------------------------------------------------------- EDA----------------------------------------------------------
 
-col_option = st.selectbox("Select Plot",("Correlation Plot", "Distribtuion of Churn","Distribution of Tenure","Churn Distribution with Tenure", "Distribution of Gender","Distribution of SeniorCitizen", "Chrun distribuiton with SeniorCitizen","Distribution of PhoneService", "Churn distribuiton with PhoneService", "Distribution of PaymentMethod", "Churn distribuiton with PhoneService"))
+col_option = st.selectbox("You can select any one option from the select box.",("Correlation Plot", "Distribtuion of Churn","Distribution of Tenure","Churn Distribution with Tenure", "Distribution of Gender","Distribution of SeniorCitizen", "Chrun distribuiton with SeniorCitizen","Distribution of PhoneService", "Churn distribuiton with PhoneService", "Distribution of PaymentMethod", "Churn distribuiton with PhoneService"))
 
 #----------------------------------------------------------- Correlation ----------------------------------------------------
 
@@ -229,7 +229,7 @@ y_pred6 = et_model.predict(X_test)
 accuracy6 = et_model.score(X_test,y_test)
 et_matrix = confusion_matrix(y_test, y_pred6)
 
-options = st.selectbox("Choose an Option",("LogisticRegression","DecisionTree Classifier","RandomForest Classifier", "KNeighbors Classifier","AdaBoost Classifier","GradientBoosting Classifier", "ExtraTrees Classifier"))
+options = st.selectbox("You can select any one option from the select box.",("LogisticRegression","DecisionTree Classifier","RandomForest Classifier", "KNeighbors Classifier","AdaBoost Classifier","GradientBoosting Classifier", "ExtraTrees Classifier"))
 
 if options == "LogisticRegression":
 	st.write("### Logistic Regression")
