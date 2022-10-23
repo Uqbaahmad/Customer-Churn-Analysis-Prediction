@@ -3,9 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
-from joblib import load
-import pickle
 import os
+
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -21,8 +20,9 @@ from sklearn.ensemble import GradientBoostingClassifier
 
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
-from sklearn.metrics import mean_absolute_error, mean_squared_error
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import  confusion_matrix
+
+
 
 # Title
 st.title("Customer Churn App")
@@ -79,7 +79,7 @@ if st.checkbox("Describe Dataset"):
 
 #------------------------------------------------------------- EDA----------------------------------------------------------
 
-col_option = st.selectbox("You can select any one option from the select box.",("Correlation Plot", "Distribtuion of Churn","Distribution of Tenure","Churn Distribution with Tenure", "Distribution of Gender","Distribution of SeniorCitizen", "Chrun distribuiton with SeniorCitizen","Distribution of PhoneService", "Churn distribuiton with PhoneService", "Distribution of PaymentMethod", "Churn distribuiton with PhoneService"))
+col_option = st.selectbox("You can select any one option from the select box.",("Correlation Plot", "Distribtuion of Churn","Distribution of Tenure","Churn Distribution with Tenure", "Distribution of Gender","Distribution of SeniorCitizen", "Chrun distribuiton with SeniorCitizen","Distribution of PhoneService", "Churn distribuiton with PhoneService", "Distribution of PaymentMethod", "Churn distribuiton with PaymentMethod"))
 
 #----------------------------------------------------------- Correlation ----------------------------------------------------
 
@@ -96,6 +96,7 @@ if col_option == "Distribtuion of Churn":
 		fig, ax = plt.subplots(figsize=(10,10))
 		st.write(data.iloc[:,-1].value_counts().plot.pie(autopct="%1.1f%%", colors = ['lightblue', 'pink'],shadow = True,startangle=90))
 		st.pyplot(fig)
+		st.write("#### Value Count of Churn")
 		st.write(data.iloc[:,-1].value_counts())
 
 #--------------------------------------------- Distribution of Tenure --------------------------------------------------------
@@ -104,6 +105,7 @@ if col_option == "Distribution of Tenure":
 	st.write(" ### Distribution of Tenure")
 	fig = sns.displot(data=data, x="tenure", binwidth=3)
 	st.pyplot(fig)
+	st.write("#### Value Count of Tenure")
 	st.write(data['tenure'].value_counts())
 
 #Churn yes dataset
@@ -119,16 +121,15 @@ if col_option == "Churn Distribution with Tenure":
 	st.write(px.scatter(X, x="tenure",y='index',log_x=True, width=600))	
 
 #----------------------------------------------  Distribution of Gender --------------------------------------------------------
-
 if col_option == "Distribution of Gender":
 	st.write(" ### Distribution of Gender")
 	fig, ax = plt.subplots(figsize=(8, 7))
 	st.write(sns.countplot(data=data, x="gender"))
 	st.pyplot(fig)
+	st.write("#### Value Count of Gender")
 	st.write(data['gender'].value_counts())
 
 # ---------------------------------------------- Distribution of SeniorCitizen ---------------------------------------------------
-
 if col_option == "Distribution of SeniorCitizen":
 	st.write("### Distribution of SeniorCitizen")
 	fig, ax = plt.subplots(figsize = (10, 10))
@@ -143,32 +144,32 @@ if col_option == "Chrun distribuiton with SeniorCitizen":
 	st.write(px.histogram(data, x="Churn", color="SeniorCitizen", barmode="group", color_discrete_map={"Yes": 'blue', "No": 'lightblue'}))
 	
 #--------------------------------------------------- Distribuiton with PhoneService ---------------------------------------------------
-
 if col_option == "Distribution of PhoneService":
 	st.write(" ### Distribution of PhoneService")
 	fig, ax = plt.subplots(figsize=(8, 7))
 	st.write(sns.countplot(data=data, x="PhoneService"))
 	st.pyplot(fig)
+	st.write("#### Value Count of PhoneService")
 	st.write(data['PhoneService'].value_counts())
 
 if col_option == "Churn distribuiton with PhoneService":
 	st.write("### Churn distribuiton with PhoneService")
 	fig, ax = plt.subplots(figsize=(10, 10))
 	st.write(px.histogram(data, x="Churn", color="PhoneService", barmode="group", color_discrete_map={"Yes": 'blue', "No": 'lightblue'}))
-	st.pyplot(fig)
+	st.plotly_chart(fig)
 
 # -------------------------------------------------Distribution of PaymentMethod-----------------------------------------------------
-
-#sns.catplot(data=df, x="PhoneService", kind="count");
 if col_option == "Distribution of PaymentMethod":
 	st.write("### Distribution of PaymentMethod")
-	fig =sns.catplot(data=data, x="PhoneService", kind="count") 
+	fig =sns.catplot(data=data, x="PaymentMethod", kind="count") 
 	st.pyplot(fig)
+	st.write("#### Value Count of PaymentMethod")
+	st.write(data['PhoneService'].value_counts())
 
-if col_option =="Churn distribuiton with PhoneService":
-	st.write("Churn distribuiton with PhoneService")
-	# fig, ax=  plt.subplots(figsize=(10, 10))
-	fig = px.histogram(data, x="Churn", color="PhoneService", barmode="group", color_discrete_map={"Yes": 'blue', "No": 'lightblue'})
+if col_option =="Churn distribuiton with PaymentMethod":
+	st.write("Churn distribuiton with PaymentMethod")
+	fig, ax = plt.subplots(figsize=(10, 10))
+	st.write(px.histogram(data, x="Churn", color="PaymentMethod", barmode="group", color_discrete_map={"Yes": 'blue', "No": 'lightblue'}))
 	st.plotly_chart(fig)
 
 #---------------------------------------------------- Prediction-----------------------------------------------------------------------
@@ -179,7 +180,6 @@ y = new_df['Churn'].values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= 0.30, random_state=1)
 
 #------------------------------------------------------------ Logistic Regression -----------------------------------------------------
-
 log_model = make_pipeline(StandardScaler(),LogisticRegression())
 log_model.fit(X_train, y_train)
 y_pred = log_model.predict(X_test)
@@ -187,7 +187,6 @@ accuracy = log_model.score(X_test,y_test)
 lr_matrix = confusion_matrix(y_test, y_pred)
 
 #----------------------------------------------------------------Decision Tree----------------------------------------------------------
-
 dec_model = make_pipeline(StandardScaler(), DecisionTreeClassifier())
 dec_model.fit(X_train,y_train)
 y_pred1 = dec_model.predict(X_test)
