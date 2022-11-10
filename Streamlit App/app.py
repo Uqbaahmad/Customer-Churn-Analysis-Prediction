@@ -76,7 +76,7 @@ else:
 if st.checkbox("Describe Dataset"):
 	st.text("Let’s get a quick summary of the dataset using the describe method")
 	st.write(data.describe())	
-
+	
 #------------------------------------------------------------- EDA----------------------------------------------------------
 
 col_option = st.selectbox("You can select any one option from the select box.",("Correlation Plot", "Distribtuion of Churn","Distribution of Tenure","Churn Distribution with Tenure", "Distribution of Gender","Distribution of SeniorCitizen", "Chrun distribuiton with SeniorCitizen","Distribution of PhoneService", "Churn distribuiton with PhoneService", "Distribution of PaymentMethod", "Churn distribuiton with PaymentMethod"))
@@ -298,4 +298,6 @@ if options == "ExtraTrees Classifier":
 	st.write("### ExtraTrees accuracy: ",accuracy6)
 	st.write("### Precision - ",precision_score(y_test,y_pred6))
 	st.write("### Recall - ",recall_score(y_test,y_pred6))
-	st.write("### F1 score - ",f1_score(y_test,y_pred6))		
+	st.write("### F1 score - ",f1_score(y_test,y_pred6))
+
+
