@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import os
+from optparse import Values
+from statistics import mode
 
 
 from sklearn.preprocessing import StandardScaler
@@ -299,5 +301,61 @@ if options == "ExtraTrees Classifier":
 	st.write("### Precision - ",precision_score(y_test,y_pred6))
 	st.write("### Recall - ",recall_score(y_test,y_pred6))
 	st.write("### F1 score - ",f1_score(y_test,y_pred6))
+#------------------------------------------------------------------------------------------------------------------------------------------------
+from joblib import load
+st.header("Predicting Customer Churn")
 
+def load_model():
+    return load('model/churn.jb')
+
+
+with st.form('form1', clear_on_submit=False):
+		gender = st.selectbox('Gender:', [1, 0])
+		seniorcitizen= st.selectbox(' Customer is a senior citizen:', [0, 1])
+		partner= st.selectbox(' Customer has a partner:', [1, 0])
+		dependents = st.selectbox(' Customer has  dependents:', [1, 0])
+		phoneservice = st.selectbox(' Customer has phoneservice:', ['1', '0'])
+		multiplelines = st.selectbox(' Customer has multiplelines:', [2, 0, 1])
+		internetservice= st.selectbox(' Customer has internetservice:', ['0', '1', '2'])
+		onlinesecurity= st.selectbox(' Customer has onlinesecurity:', [2, 0, 1])
+		onlinebackup = st.selectbox(' Customer has onlinebackup:', ['2', 0, 1])
+		deviceprotection = st.selectbox(' Customer has deviceprotection:', [2, 0, 1])
+		techsupport = st.selectbox(' Customer has techsupport:', [2, 0, 1])
+		streamingtv = st.selectbox(' Customer has streamingtv:', [2, 0, 1])
+		streamingmovies = st.selectbox(' Customer has streamingmovies:', [2, 0, 1])
+		contract= st.selectbox(' Customer has a contract:', [0, 1, 2])
+		paperlessbilling = st.selectbox(' Customer has a paperlessbilling:', [1, 0])
+		paymentmethod= st.selectbox('Payment Option:', [0, 1, 2, 3])
+		tenure = st.number_input('Number of months the customer has been with the current telco provider :', min_value=0, max_value=240, value=0)
+		monthlycharges= st.number_input('Monthly charges :', min_value=0, max_value=240, value=0)
+		totalcharges = tenure*monthlycharges
+		output= ""
+		output_prob = ""
+		button = st.form_submit_button("Predict Customer Churn Status")
+if button:
+	input_dict=[{
+				"gender":gender ,
+				"seniorcitizen": seniorcitizen,
+				"partner": partner,
+				"dependents": dependents,
+				"phoneservice": phoneservice,
+				"multiplelines": multiplelines,
+				"internetservice": internetservice,
+				"onlinesecurity": onlinesecurity,
+				"onlinebackup": onlinebackup,
+				"deviceprotection": deviceprotection,
+				"techsupport": techsupport,
+				"streamingtv": streamingtv,
+				"streamingmovies": streamingmovies,
+				"contract": contract,
+				"paperlessbilling": paperlessbilling,
+				"paymentmethod": paymentmethod,
+				"tenure": tenure,
+				"monthlycharges": monthlycharges,
+				"totalcharges": totalcharges
+			}]
+	input_dict = pd.DataFrame(input_dict)
+	model = load_model()
+	pred = model.predict(input_dict)
+	st.markdown('# Customer will leave' if pred[0] == 0 else '# Customer stay')
 
